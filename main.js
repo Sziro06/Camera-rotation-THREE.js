@@ -34,8 +34,7 @@ function onDocumentKeyDown(event) {
     } else if (keyCode === 83 || keyCode === 115) { // S eller s
         camera.rotation.x -= 0.01;
     } else if (keyCode === 82 || keyCode === 114) { // S eller s
-        camera.rotation.z -= 3;
-        camera.rotation.y -= 0.01;
+        camera.rotation.z -= 0.01;
     }
 }
 
