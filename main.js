@@ -1,13 +1,9 @@
 //variabeler
-let scene, renderer, camera, zoom, mouse, raycaster, isMousePressed, previousMousePosition;
+let scene, renderer, camera, zoom;
 
 scene = new THREE.Scene();
 renderer = new THREE.WebGLRenderer();
 camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-mouse = new THREE.Vector2();
-isMousePressed = false;
-previousMousePosition = new THREE.Vector2();
-
 
 camera.position.z = 4.5;
 camera.position.y = 1;
@@ -55,36 +51,6 @@ scene.add( particles );
 
 
 
-
-//mus bevegelsen
-document.addEventListener('mousemove', (event) => {
-    isMousePressed = true;
-    previousMousePosition.set(event.clientX, event.clientY);
-});
-
-document.addEventListener('mouseup', () => {
-    isMousePressed = false;
-});
-
-document.addEventListener('mousemove', (event) => {
-    // Hvis musen er nede, beregn endringen i museposisjonen og juster kameraposisjonen.
-    if (isMousePressed) {
-      const deltaMousePosition = new THREE.Vector2(
-        event.clientX - previousMousePosition.x,
-        event.clientY - previousMousePosition.y
-      );
-
-      // Juster kameraposisjonen basert på musebevegelsen.
-      camera.position.x += deltaMousePosition.x * 0.01;
-      camera.position.y -= deltaMousePosition.y * 0.01;
-
-      // Lagre nåværende museposisjon for neste beregning.
-      previousMousePosition.set(event.clientX, event.clientY);
-
-      // Oppdater rendreren.
-      renderer.render(scene, camera);
-    }
-});
 
 
 
