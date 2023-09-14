@@ -1,9 +1,13 @@
-let scene, renderer, camera, zoom;
+//variabeler
+let scene, renderer, camera, zoom, mouse, raycaster, isMousePressed, previousMousePosition;
 
 scene = new THREE.Scene();
-renderer = new THREE.WebGL1Renderer();
-zoom = 1000;
-camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, zoom );
+renderer = new THREE.WebGLRenderer();
+camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+mouse = new THREE.Vector2();
+isMousePressed = false;
+previousMousePosition = new THREE.Vector2();
+
 
 camera.position.z = 4.5;
 camera.position.y = 1;
@@ -17,18 +21,6 @@ const cube = new THREE.Mesh( player, playerMaterial );
 scene.add( cube );
 
 camera.position.z = 5;
-
-function animate() {
-	requestAnimationFrame( animate );
-
-    particles.rotation.x+=.0001
-	particles.rotation.y+=.0001
-	particles.rotation.z+=.0005
-
-	renderer.render( scene, camera );
-}
-
-
 
 
 
@@ -64,10 +56,41 @@ scene.add( particles );
 
 
 
+//mus bevegelsen
+document.addEventListener('mousemove', (event) => {
+    isMousePressed = true;
+    previousMousePosition.set(event.clientX, event.clientY);
+});
+
+document.addEventListener('mouseup', () => {
+    isMousePressed = false;
+});
+
+document.addEventListener('mousemove', (event) => {
+    // Hvis musen er nede, beregn endringen i museposisjonen og juster kameraposisjonen.
+    if (isMousePressed) {
+      const deltaMousePosition = new THREE.Vector2(
+        event.clientX - previousMousePosition.x,
+        event.clientY - previousMousePosition.y
+      );
+
+      // Juster kameraposisjonen basert på musebevegelsen.
+      camera.position.x += deltaMousePosition.x * 0.01;
+      camera.position.y -= deltaMousePosition.y * 0.01;
+
+      // Lagre nåværende museposisjon for neste beregning.
+      previousMousePosition.set(event.clientX, event.clientY);
+
+      // Oppdater rendreren.
+      renderer.render(scene, camera);
+    }
+});
 
 
 
 
+
+//Knapper
 document.addEventListener("keydown", onDocumentKeyDown, false);
 
 function onDocumentKeyDown(event) {
@@ -77,10 +100,21 @@ function onDocumentKeyDown(event) {
     } else if (keyCode === 65 || keyCode === 97) { // A eller a
         camera.rotation.y += 0.01;
     } else if (keyCode === 87 || keyCode === 119) { // W eller w
-        zoom = zoom - 10;
+        camera.position.z -= 0.1;
     } else if (keyCode === 83 || keyCode === 115) { // S eller s
-        camera.rotation.x -= 0.01;
+        camera.position.z += 0.1;
     }
+}
+
+// den som får ting til å repetere
+function animate() {
+	requestAnimationFrame( animate );
+
+    particles.rotation.x+=.0001
+	particles.rotation.y+=.0001
+	particles.rotation.z+=.0005
+
+	renderer.render( scene, camera );
 }
 
 
